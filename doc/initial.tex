@@ -1,0 +1,57 @@
+\documentclass[a4paper]{article}
+
+\usepackage[a4paper,  margin=1.0in]{geometry}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+
+
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+
+\title{Text-based brand safety system - realization project}
+
+\author{Mikołaj Ciesielski, Bartosz Paszko, Michał Sypetkowski}
+\maketitle
+
+\section{General information}
+
+We are implementing a system
+that provides brand safety functionality.
+
+Tools and languages:
+\begin{itemize}
+    \item \textbf{Python}\footnote{\url{https://www.python.org/}}
+    \item \textbf{pykka}\footnote{\url{https://www.pykka.org/en/latest/}}
+\end{itemize}
+
+
+
+\section{Actor types}
+We decided to distinguish 2 types of actors.
+
+\subsection{Main actor}
+This actor will accept queries from client applications.
+The query will consist of the website body, and the advertisements specification.
+Actors of this type will respond for each each advertisement
+(whether it conflicts with given website).
+
+\subsection{Text extraction actor}
+A website will be represented by it's whole html code.
+First, we plan to obtain raw text fragments from it,
+then pass these fragments to the text processing actors.
+
+TODO: describe method or mention tools
+
+\subsection{Text processing actor}
+Raw text fragments are sent to text processing actors.
+Their task is to predict labels for raw text fragments.
+They are separated from text extraction actors,
+because they will be able to use GPU acceration
+for faster processing.
+
+TODO: describe NLP method, find dataset
+
+\end{document}
