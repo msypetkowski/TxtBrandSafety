@@ -21,43 +21,65 @@
 We are implementing a system
 that provides brand safety functionality.
 
-Tools and languages:
+Most important tools and languages:
 \begin{itemize}
     \item \textbf{Python}\footnote{\url{https://www.python.org/}}
         - the whole project will be written in python
     \item \textbf{pykka}\footnote{\url{https://www.pykka.org/en/latest/}}
         - for communication between services
+    \item \textbf{NumPy}\footnote{\url{http://www.numpy.org/}}
 \end{itemize}
 
+
+\section{Discriminator}
 In text processing system, we will use ready word embeddings
 from a model trained on large dataset (eventually we will train the embeddings).
 
-
-\section{Advertisement and website types}
-
 We will manually define a fixed number of possible advertisement types.
+Similarly, we will define fixed number of possible website types.
+For each website type we will create small datasets
+using text fragments from real websites.
+Let $T$ by set of advertisement types and $C$ -- set website types.
 
-Similarly, we will define fixed number of possible website types and 
-For each website type we will consider using example
-text fragments and extract specific embeddings
-(e.g. weighed list of word embeddings).
-These embeddings will be used for classifying websites.
+\subsection{Website classification}
 
-TODO: how exactly website type will be
-represented and how classyfying will be done (we want probabilities)
+Let's call a text fragment extracted from website a document.
+For each document class $c_i\in{C}$, we will create a list of keywords:
+\begin{equation}
+    (k_{i,1}, k_{i,2}, \ldots, k_{i, n_i})
+\end{equation}
+For each document, we are able to calculate "content" (real number) of a given keyword $k$,
+using word embeddings.
+We concatenate keywords lists from all defined classes:
+\begin{equation}
+    (k_{1,1}, k_{1,2}, \ldots, k_{1, n_1},
+    k_{2,1}, k_{2,2}, \ldots, k_{2, n_2},
+    \ldots,
+    k_{|C|,1}, k_{|C|,2}, \ldots, k_{|C|, n_{|C|}})
+\end{equation}
+Then we treat "contents" of these keywords as attributes of classification example.
+We create training examples from the dataset - one training example from one text in dataset.
 
-\section{Measuring advertisement compatibility}
+Then we will feed these training examples into a classifier.
+We are planning to use e.g. naive bayes classifier.
 
-Wi will manually define a cost matrix $C(x, y)$ of rows
-of size equal to number of advertisement types.
-Each column will correspond to the text document type.
+One website may contain many text fragments.
+We will average class vectors from classifier,
+weighting them by the text length
+(or consider more sophisticated tehniques).
 
-We will perform discrimination for each advertisement type $x$
+
+\subsection{Measuring advertisement compatibility}
+
+Wi will manually define a cost matrix $C(t, c)$ 
+with $|T|$ rows and $|C|$ columns.
+
+We will perform discrimination for each advertisement type $t$
 by thresholding the following sum:
 \begin{equation}
-    \sum_{y\in{Y}} {C(t, y) * P(y)}
+    \sum_{c\in{Y}} {C(t, c) \cdot P(c)}
 \end{equation}
-where $P(y)$ is predicted probability of the text document being of type $y$.
+where $P(c)$ is predicted probability of the text document having type $c$.
 
 
 
