@@ -24,34 +24,64 @@ that provides brand safety functionality.
 Tools and languages:
 \begin{itemize}
     \item \textbf{Python}\footnote{\url{https://www.python.org/}}
+        - the whole project will be written in python
     \item \textbf{pykka}\footnote{\url{https://www.pykka.org/en/latest/}}
+        - for communication between services
 \end{itemize}
 
+In text processing system, we will use ready word embeddings
+from a model trained on large dataset (eventually we will train the embeddings).
 
 
-\section{Actor types}
-We decided to distinguish 2 types of actors.
+\section{Advertisement and website types}
 
-\subsection{Main actor}
-This actor will accept queries from client applications.
-The query will consist of the website body, and the advertisements specification.
-Actors of this type will respond for each each advertisement
-(whether it conflicts with given website).
+We will manually define a fixed number of possible advertisement types.
 
-\subsection{Text extraction actor}
+Similarly, we will define fixed number of possible website types and 
+For each website type we will consider using example
+text fragments and extract specific embeddings
+(e.g. weighed list of word embeddings).
+These embeddings will be used for classifying websites.
+
+TODO: how exactly website type will be
+represented and how classyfying will be done (we want probabilities)
+
+\section{Measuring advertisement compatibility}
+
+Wi will manually define a cost matrix $C(x, y)$ of rows
+of size equal to number of advertisement types.
+Each column will correspond to the text document type.
+
+We will perform discrimination for each advertisement type $x$
+by thresholding the following sum:
+\begin{equation}
+    \sum_{y\in{Y}} {C(t, y) * P(y)}
+\end{equation}
+where $P(y)$ is predicted probability of the text document being of type $y$.
+
+
+
+\section{Services types}
+We decided to distinguish 2 types of services.
+
+\subsection{Main service}
+This service will accept queries from client applications.
+The query argument will be the website body (html code).
+Services of this type will respond with list of decision for each advertisement type
+(whether the advertisement of given type conflict with the given website).
+The website code is passed to a text processing service.
+The service will perform load balancing by employing proper text processing services
+(e.g. by random choice).
+
+
+\subsection{Text extraction and processing service}
 A website will be represented by it's whole html code.
-First, we plan to obtain raw text fragments from it,
-then pass these fragments to the text processing actors.
+This service will obtain raw text fragments from it.
+This service will answer queries by returning vector of length of advertisement types.
+The vector will contain probabilities whether placing an advertisement of given type
+on the website (that query is about) is appriopriate.
 
-TODO: describe method or mention tools
+We are planning to use GPU acceration for faster text processing.
 
-\subsection{Text processing actor}
-Raw text fragments are sent to text processing actors.
-Their task is to predict labels for raw text fragments.
-They are separated from text extraction actors,
-because they will be able to use GPU acceration
-for faster processing.
-
-TODO: describe NLP method, find dataset
 
 \end{document}
