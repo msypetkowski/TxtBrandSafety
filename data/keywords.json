@@ -1,0 +1,13 @@
+{
+    "adtypes":  ["alcohol", "electronics", "jobs"],
+
+    "keywords": [
+            "alcohol", "wine", "beer", "liquor", "beverage", "vodka",
+            "food", "bread", "shop"
+    ],
+
+    "sitetypes": [
+        "shop_alcohol",
+        "general_store"
+    ]
+}
