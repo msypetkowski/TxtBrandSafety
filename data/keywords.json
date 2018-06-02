@@ -3,11 +3,13 @@
 
     "keywords": [
             "alcohol", "wine", "beer", "liquor", "beverage", "vodka",
-            "food", "bread", "shop", "grocery", "general", "store"
+            "food", "bread", "shop", "grocery", "general", "store",
+            "computer", "digital", "video", "laptop", "camera", "electronics"
     ],
 
     "sitetypes": [
         "shop_alcohol",
-        "general_store"
+        "general_store",
+        "electronic_shop"
     ]
 }
