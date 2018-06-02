@@ -40,7 +40,7 @@ class WordModel:
     def tokenize(self, text):
         words = nltk.word_tokenize(text)
         if self._model_type == 'wordnet':
-            return [w for w in words if len(wordnet.synsets(w)) > 0]
+            ret = [w for w in words if len(wordnet.synsets(w)) > 0]
         else:
             ret = []
             for word in words:
@@ -49,4 +49,6 @@ class WordModel:
                     ret.append(word)
                 except KeyError:
                     pass
-            return ret
+        if len(ret) < 1:
+            ret = ['nothing']
+        return ret

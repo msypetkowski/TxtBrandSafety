@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import json
+import pickle
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -19,15 +20,18 @@ def read_metadata():
     return data['adtypes'], data['keywords'], data['sitetypes']
 
 
-class WebsiteClassifier:
+class TextClassifier:
 
-    def __init__(self, word_model):
+    def __init__(self, word_model, filename=None):
         self._word_model = word_model
-        self._metadata = read_metadata()
-        self._dataset = self.prepare_dataset()
-        print('training examples count:', len(self._dataset[0]))
-        # print('\n'.join(map(str,features)))
-        pass
+        self._classifier = None
+        if filename is None:
+            self._metadata = read_metadata()
+            self._dataset = self.prepare_dataset()
+            print('training examples count:', len(self._dataset[0]))
+            # print('\n'.join(map(str,features)))
+        else:
+            self.load(filename)
 
     def tokens_to_feature_vector(self, tokens, keywords):
         return [self._word_model.calc_content_in_text(keyword, tokens) for keyword in keywords]
@@ -108,16 +112,26 @@ class WebsiteClassifier:
         feature_vectors = (feature_vectors - means) / stds
         return self._classifier.predict_proba(feature_vectors)
 
+    def save(self, filename='classifier_data'):
+        with open(filename, 'wb') as file:
+            pickle.dump((self._metadata, self._dataset, self._classifier), file)
+            # pickle.dump(self._classifier, file)
+
+    def load(self, filename='classifier_data'):
+        with open(filename, 'rb') as file:
+            self._metadata, self._dataset, self._classifier = pickle.load(file)
+
 
 def main():
     # word_model = WordModel(model_type='wordnet')
     word_model = WordModel(model_type='GoogleNews')
-    website_classifier = WebsiteClassifier(word_model)
-    website_classifier.train_classifier(classifier_type='svm')
+    text_classifier = TextClassifier(word_model)
+    text_classifier.train_classifier(classifier_type='svm')
+    text_classifier.save()
     while True:
         text = input('Enter text to classify:')
 
-        probabilities = website_classifier.classify_texts([text])[0]
+        probabilities = text_classifier.classify_texts([text])[0]
         print("predicted probabilities:", probabilities)
         print("probabilities argmax:", np.argmax(probabilities))
 
