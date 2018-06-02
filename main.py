@@ -1,66 +1,14 @@
 #!/usr/bin/env python3
 
 import json
-import gensim
-import nltk
-from itertools import product
-from nltk.corpus import wordnet
-import numpy as np
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+import numpy as np
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
-
 from sklearn.preprocessing import normalize
 
-
-VECTORS_FILE = './GoogleNews-vectors-negative300.bin'
-# VECTORS_FILE = '/tmp/GoogleNews-vectors-negative300.bin'
-
-
-class WordModel:
-    def __init__(self, model_type='wordnet'):
-        self._model_type = model_type
-        if model_type=='GoogleNews':
-            self._model = gensim.models.KeyedVectors.load_word2vec_format(VECTORS_FILE, binary=True)
-        elif model_type=='wordnet':
-            pass
-        else:
-            raise ValueError("Unknown word model.")
-
-
-    def similarity(self, word1, word2):
-        """ Returns similarity of 2 words
-        """
-        if self._model_type == 'wordnet':
-            syns1 = wordnet.synsets(word1)
-            syns2 = wordnet.synsets(word2)
-            ret =  [wordnet.wup_similarity(s1, s2) or 0
-                    for s1, s2 in product(syns1, syns2)]
-            return np.mean(ret)
-        else:
-            return self._model.similarity(word1, word2)
-
-    def calc_content_in_text(self, word, text):
-        # TODO: consider different method
-        res = 0
-        for w in text:
-            res += self.similarity(w, word)
-        return res / len(text)
-
-    def tokenize(self, text):
-        words = nltk.word_tokenize(text)
-        if self._model_type == 'wordnet':
-            return [w for w in words if len(wordnet.synsets(w)) > 0]
-        else:
-            ret = []
-            for word in words:
-                try:
-                    self._model[word]
-                    ret.append(word)
-                except KeyError:
-                    pass
-            return ret
+from word_model import WordModel
 
 
 def tokens_to_feature_vector(tokens, keywords, word_model):
@@ -109,22 +57,22 @@ def prepare_dataset(word_model):
 
 
 def main():
-    word_model = WordModel(model_type='wordnet')
+    # word_model = WordModel(model_type='wordnet')
     word_model = WordModel(model_type='GoogleNews')
     labels, features, means, stds = prepare_dataset(word_model)
     print('training examples count:', len(labels))
     # print('\n'.join(map(str,features)))
 
     print('attribute means values by class:')
-    d1 = np.array([v for c,v in zip(labels, features) if c==0])
-    d2 = np.array([v for c,v in zip(labels, features) if c==1])
-    d3 = np.array([v for c,v in zip(labels, features) if c==2])
+    d1 = np.array([v for c, v in zip(labels, features) if c == 0])
+    d2 = np.array([v for c, v in zip(labels, features) if c == 1])
+    d3 = np.array([v for c, v in zip(labels, features) if c == 2])
     print(np.mean(d1, 0))
     print(np.mean(d2, 0))
     print(np.mean(d3, 0))
     plt.scatter(d1[:, 0], d1[:, 6], s=80, c=d1[:, 12], marker='+')
     plt.scatter(d2[:, 0], d2[:, 6], s=80, c=d2[:, 12], marker='>')
-    plt.scatter(d3[:, 0], d3[:, 6], s=80, c=d3[:, 12], marker=(5,0))
+    plt.scatter(d3[:, 0], d3[:, 6], s=80, c=d3[:, 12], marker=(5, 0))
     plt.tight_layout()
     plt.show()
     print()
@@ -134,9 +82,9 @@ def main():
     # classifier = GaussianNB()
     classifier.fit(features, labels)
     predicted_labels = np.argmax(classifier.predict_proba(features), axis=1)
-    print('training accuracy:',
+    print('training accuracy (proba argmax):',
           np.mean(predicted_labels == np.array(labels)))
-    print('training accuracy (not proba argmax):',
+    print('training accuracy (normal svm):',
           np.mean(classifier.predict(features) == np.array(labels)))
 
     # For testing similarity function
@@ -152,10 +100,15 @@ def main():
     _, keywords, _ = read_metadata()
     while True:
         tokens = word_model.tokenize(input('Enter text to classify:'))
+        if len(tokens) < 1:
+            print("Invalid text")
+            continue
         feature_vector = tokens_to_feature_vector(tokens, keywords, word_model)
         feature_vector = (feature_vector - means) / stds
-        print("predicted probabilities:", classifier.predict_proba([feature_vector]))
-        print("predicted class:", classifier.predict([feature_vector]))
+        probabilities = classifier.predict_proba([feature_vector])[0]
+        print("predicted probabilities:", probabilities)
+        print("probabilities argmax:", np.argmax(probabilities))
+        print("predicted class:", classifier.predict([feature_vector])[0])
 
 
 if __name__ == '__main__':
