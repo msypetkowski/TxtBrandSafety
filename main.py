@@ -1,32 +1,37 @@
+#!/usr/bin/env python3
+
 import json
-# import gensim
+import gensim
 import nltk
 from itertools import product
 from nltk.corpus import wordnet
 import numpy as np
+import matplotlib.pyplot as plt
 
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
 
+from sklearn.preprocessing import normalize
 
-# VECTORS_FILE = './GoogleNews-vectors-negative300.bin'
+
+VECTORS_FILE = './GoogleNews-vectors-negative300.bin'
 # VECTORS_FILE = '/tmp/GoogleNews-vectors-negative300.bin'
 
 
 class WordModel:
     def __init__(self):
         pass
-        # self._model = gensim.models.KeyedVectors.load_word2vec_format(VECTORS_FILE, binary=True)
+        self._model = gensim.models.KeyedVectors.load_word2vec_format(VECTORS_FILE, binary=True)
 
     def similarity(self, word1, word2):
         """ Returns similarity of 2 words
         """
-        syns1 = wordnet.synsets(word1)
-        syns2 = wordnet.synsets(word2)
-        ret =  max((wordnet.wup_similarity(s1, s2) or 0, s1, s2)
-                for s1, s2 in product(syns1, syns2))
-        return ret[0]
-        # return self._model.similarity(word1, word2)
+        # syns1 = wordnet.synsets(word1)
+        # syns2 = wordnet.synsets(word2)
+        # ret =  [wordnet.wup_similarity(s1, s2) or 0
+        #         for s1, s2 in product(syns1, syns2)]
+        # return np.mean(ret)
+        return self._model.similarity(word1, word2)
 
     def calc_content_in_text(self, word, text):
         # TODO: consider different method
@@ -36,17 +41,17 @@ class WordModel:
         return res / len(text)
 
     def tokenize(self, text):
-        ret = nltk.word_tokenize(text)
-        return [w for w in ret if len(wordnet.synsets(w)) > 0]
-        # words = text.split()
-        # ret = []
-        # for word in words:
-        #     try:
-        #         self._model[word]
-        #         ret.append(word)
-        #     except KeyError:
-        #         pass
-        # return ret
+        # ret = nltk.word_tokenize(text)
+        # return [w for w in ret if len(wordnet.synsets(w)) > 0]
+        words = nltk.word_tokenize(text)
+        ret = []
+        for word in words:
+            try:
+                self._model[word]
+                ret.append(word)
+            except KeyError:
+                pass
+        return ret
 
 
 def tokens_to_feature_vector(tokens, keywords, word_model):
@@ -62,7 +67,7 @@ def read_metadata():
 
 
 def prepare_dataset(word_model):
-    """ Returns list of pairs (int:class, list:feature_vector)
+    """ Returns tuple (labels, feature_vectors, attributes_means, attributes_stds)
     """
     rows = []
     _, keywords, sitetypes = read_metadata()
@@ -85,24 +90,35 @@ def prepare_dataset(word_model):
             feature_vector = tokens_to_feature_vector(tk, keywords, word_model)
             rows.append((class_id, feature_vector))
 
-    return rows
+    labels, features = zip(*rows)
+    means = np.mean(features, axis=0)
+    stds = np.std(features, axis=0)
+    features = (features - means) / stds
+    assert len(labels) == len(features)
+    assert len(means) == len(stds) == len(keywords)
+    return labels, np.array(features), means, stds
 
 
 def main():
     word_model = WordModel()
-    dataset = prepare_dataset(word_model)
-    print('training examples count:', len(dataset))
-    # print('\n'.join(map(str,dataset)))
+    labels, features, means, stds = prepare_dataset(word_model)
+    print('training examples count:', len(labels))
+    # print('\n'.join(map(str,features)))
 
     print('attribute means values by class:')
-    print(np.mean([v for c,v in dataset if c==0], 0))
-    print(np.mean([v for c,v in dataset if c==1], 0))
+    d1 = np.array([v for c,v in zip(labels, features) if c==0])
+    d2 = np.array([v for c,v in zip(labels, features) if c==1])
+    print(np.mean(d1, 0))
+    print(np.mean(d2, 0))
+    plt.scatter(d1[:, 0], d1[:, 1], s=80, c=d1[:, 2], marker='+')
+    plt.scatter(d2[:, 0], d2[:, 1], s=80, c=d2[:, 2], marker='>')
+    plt.tight_layout()
+    plt.show()
     print()
 
     # train classifier
-    # classifier = svm.SVC()
-    classifier = GaussianNB()
-    labels, features = zip(*dataset)
+    classifier = svm.SVC()
+    # classifier = GaussianNB()
     classifier.fit(features, labels)
     print('training accuracy:', np.mean(np.array(classifier.predict(features)) == np.array(labels)))
 
@@ -120,6 +136,7 @@ def main():
     while True:
         tokens = word_model.tokenize(input('Enter text to classify:'))
         feature_vector = tokens_to_feature_vector(tokens, keywords, word_model)
+        feature_vector = (feature_vector - means) / stds
         print("predicted class:", classifier.predict([feature_vector]))
 
 
