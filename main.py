@@ -19,19 +19,27 @@ VECTORS_FILE = './GoogleNews-vectors-negative300.bin'
 
 
 class WordModel:
-    def __init__(self):
-        pass
-        self._model = gensim.models.KeyedVectors.load_word2vec_format(VECTORS_FILE, binary=True)
+    def __init__(self, model_type='wordnet'):
+        self._model_type = model_type
+        if model_type=='GoogleNews':
+            self._model = gensim.models.KeyedVectors.load_word2vec_format(VECTORS_FILE, binary=True)
+        elif model_type=='wordnet':
+            pass
+        else:
+            raise ValueError("Unknown word model.")
+
 
     def similarity(self, word1, word2):
         """ Returns similarity of 2 words
         """
-        # syns1 = wordnet.synsets(word1)
-        # syns2 = wordnet.synsets(word2)
-        # ret =  [wordnet.wup_similarity(s1, s2) or 0
-        #         for s1, s2 in product(syns1, syns2)]
-        # return np.mean(ret)
-        return self._model.similarity(word1, word2)
+        if self._model_type == 'wordnet':
+            syns1 = wordnet.synsets(word1)
+            syns2 = wordnet.synsets(word2)
+            ret =  [wordnet.wup_similarity(s1, s2) or 0
+                    for s1, s2 in product(syns1, syns2)]
+            return np.mean(ret)
+        else:
+            return self._model.similarity(word1, word2)
 
     def calc_content_in_text(self, word, text):
         # TODO: consider different method
@@ -41,17 +49,18 @@ class WordModel:
         return res / len(text)
 
     def tokenize(self, text):
-        # ret = nltk.word_tokenize(text)
-        # return [w for w in ret if len(wordnet.synsets(w)) > 0]
         words = nltk.word_tokenize(text)
-        ret = []
-        for word in words:
-            try:
-                self._model[word]
-                ret.append(word)
-            except KeyError:
-                pass
-        return ret
+        if self._model_type == 'wordnet':
+            return [w for w in words if len(wordnet.synsets(w)) > 0]
+        else:
+            ret = []
+            for word in words:
+                try:
+                    self._model[word]
+                    ret.append(word)
+                except KeyError:
+                    pass
+            return ret
 
 
 def tokens_to_feature_vector(tokens, keywords, word_model):
@@ -100,7 +109,8 @@ def prepare_dataset(word_model):
 
 
 def main():
-    word_model = WordModel()
+    word_model = WordModel(model_type='wordnet')
+    word_model = WordModel(model_type='GoogleNews')
     labels, features, means, stds = prepare_dataset(word_model)
     print('training examples count:', len(labels))
     # print('\n'.join(map(str,features)))
@@ -120,10 +130,14 @@ def main():
     print()
 
     # train classifier
-    classifier = svm.SVC(decision_function_shape='ovo')
+    classifier = svm.SVC(decision_function_shape='ovo', probability=True)
     # classifier = GaussianNB()
     classifier.fit(features, labels)
-    print('training accuracy:', np.mean(np.array(classifier.predict(features)) == np.array(labels)))
+    predicted_labels = np.argmax(classifier.predict_proba(features), axis=1)
+    print('training accuracy:',
+          np.mean(predicted_labels == np.array(labels)))
+    print('training accuracy (not proba argmax):',
+          np.mean(classifier.predict(features) == np.array(labels)))
 
     # For testing similarity function
     #
@@ -140,6 +154,7 @@ def main():
         tokens = word_model.tokenize(input('Enter text to classify:'))
         feature_vector = tokens_to_feature_vector(tokens, keywords, word_model)
         feature_vector = (feature_vector - means) / stds
+        print("predicted probabilities:", classifier.predict_proba([feature_vector]))
         print("predicted class:", classifier.predict([feature_vector]))
 
 
