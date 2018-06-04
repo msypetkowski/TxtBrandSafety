@@ -143,8 +143,6 @@ class TextClassifier:
 
 
 def main():
-    # word_model = WordModel(model_type='wordnet')
-
     filename = 'classifier_data' if os.path.exists('classifier_data') else None
     word_model = WordModel(model_type='GoogleNews')
     text_classifier = TextClassifier(word_model, filename=filename)
