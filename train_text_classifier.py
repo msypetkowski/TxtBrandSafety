@@ -2,12 +2,15 @@
 
 import json
 import pickle
+import sys
+import os
 
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
 from sklearn.preprocessing import normalize
+from sklearn.model_selection import cross_val_score
 
 from word_model import WordModel
 
@@ -101,6 +104,22 @@ class TextClassifier:
         print('training accuracy (normal svm):',
             np.mean(self._classifier.predict(features) == np.array(labels)))
 
+    def cross_validate(self, classifier_type='svm'):
+        if classifier_type == 'svm':
+            self._classifier = svm.SVC(decision_function_shape='ovo', probability=True)
+        elif classifier_type == 'nb':
+            # self._classifier = GaussianNB(probability=True)
+            self._classifier = GaussianNB()
+        else:
+            raise ValueError("Unsupported classifier type.")
+      
+        labels, features, means, stds = self._dataset
+        features = features * stds + means
+
+        accuracy = cross_val_score(self._classifier, features, labels, cv=5)
+        print(f'Accuracy: {np.mean(accuracy)}')
+        return accuracy
+
     def classify_texts(self, texts):
         """ Returns vector of probabilities.
         """
@@ -124,16 +143,22 @@ class TextClassifier:
 
 def main():
     # word_model = WordModel(model_type='wordnet')
-    word_model = WordModel(model_type='GoogleNews')
-    text_classifier = TextClassifier(word_model)
-    text_classifier.train_classifier(classifier_type='svm')
-    text_classifier.save()
-    while True:
-        text = input('Enter text to classify:')
 
-        probabilities = text_classifier.classify_texts([text])[0]
-        print("predicted probabilities:", probabilities)
-        print("probabilities argmax:", np.argmax(probabilities))
+    filename = 'classifier_data' if os.path.exists('classifier_data') else None
+    word_model = WordModel(model_type='GoogleNews')
+    text_classifier = TextClassifier(word_model, filename=filename)
+    if len(sys.argv) == 2 and sys.argv[1] == 'validate':
+        text_classifier.cross_validate(classifier_type='nb')
+
+    else:
+        text_classifier.train_classifier(classifier_type='svm')
+        text_classifier.save()
+        while True:
+            text = input('Enter text to classify:')
+
+            probabilities = text_classifier.classify_texts([text])[0]
+            print("predicted probabilities:", probabilities)
+            print("probabilities argmax:", np.argmax(probabilities))
 
 
 if __name__ == '__main__':
