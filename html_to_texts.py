@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import re
 import urllib.request
 from bs4 import BeautifulSoup
@@ -28,6 +26,8 @@ def extract_texts_from_html(site):
 
 
 def classify_website(site, text_classifier):
+    """ Returns vector of class probabilities
+    """
     site = extract_texts_from_html(site)
     print('Website text blocks count:', len(site))
     site = ' '.join(site)
@@ -45,23 +45,3 @@ def fetch_url(url):
     req = urllib.request.Request(url, headers=hdr)
     site = urllib.request.urlopen(req).read()
     return site
-
-
-def main():
-    word_model = WordModel(model_type='GoogleNews')
-    text_classifier = TextClassifier(word_model, filename='classifier_data')
-
-    html = fetch_url('http://studia.elka.pw.edu.pl/EN/')
-    print(classify_website(html, text_classifier))
-
-    html = fetch_url('http://www.premierwines.com/')
-    print(classify_website(html, text_classifier))
-
-    html = fetch_url('https://www.tripadvisor.com/Restaurant_Review-g29220-d5768632-Reviews-Hali_imaile_General_Store-Maui_Hawaii.html')
-    print(classify_website(html, text_classifier))
-
-    html = fetch_url('https://www.overstock.com/Electronics/2/store.html')
-    print(classify_website(html, text_classifier))
-
-if __name__ == '__main__':
-    main()

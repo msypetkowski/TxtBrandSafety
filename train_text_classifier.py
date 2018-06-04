@@ -20,7 +20,7 @@ def read_metadata():
     """
     with open('data/keywords.json', 'r') as file:
         data = json.loads(file.read())
-    return data['adtypes'], data['keywords'], data['sitetypes']
+    return data
 
 
 class TextClassifier:
@@ -29,7 +29,8 @@ class TextClassifier:
         self._word_model = word_model
         self._classifier = None
         if filename is None:
-            self._metadata = read_metadata()
+            metadata = read_metadata()
+            self._metadata = (metadata['adtypes'], metadata['keywords'], metadata['sitetypes'])
             self._dataset = self.prepare_dataset()
             print('training examples count:', len(self._dataset[0]))
             # print('\n'.join(map(str,features)))
@@ -114,7 +115,7 @@ class TextClassifier:
             raise ValueError("Unsupported classifier type.")
       
         labels, features, means, stds = self._dataset
-        features = features * stds + means
+        # features = features * stds + means
 
         accuracy = cross_val_score(self._classifier, features, labels, cv=5)
         print(f'Accuracy: {np.mean(accuracy)}')
@@ -148,7 +149,7 @@ def main():
     word_model = WordModel(model_type='GoogleNews')
     text_classifier = TextClassifier(word_model, filename=filename)
     if len(sys.argv) == 2 and sys.argv[1] == 'validate':
-        text_classifier.cross_validate(classifier_type='nb')
+        text_classifier.cross_validate(classifier_type='svm')
 
     else:
         text_classifier.train_classifier(classifier_type='svm')

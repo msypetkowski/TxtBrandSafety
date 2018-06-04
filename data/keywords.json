@@ -1,15 +1,24 @@
 {
-    "adtypes":  ["alcohol", "electronics", "jobs"],
-
-    "keywords": [
-            "alcohol", "wine", "beer", "liquor", "beverage", "vodka",
-            "food", "bread", "shop", "grocery", "general", "store",
-            "computer", "digital", "video", "laptop", "camera", "electronics"
-    ],
+    "adtypes":  ["alcohol", "food", "electronics", "jobs", "online_games"],
 
     "sitetypes": [
         "shop_alcohol",
         "general_store",
         "electronic_shop"
+    ],
+
+    "costmatrix": [
+        [  0, 0.5,   1],
+        [  0,   0,   1],
+        [0.5, 0.5,   0],
+        [  0,   0,   0],
+        [  1,   1,   0]
+    ],
+
+    "keywords": [
+            "alcohol", "wine", "beer", "liquor", "beverage", "vodka",
+            "food", "bread", "shop", "grocery", "general", "store",
+            "computer", "digital", "video", "laptop", "camera", "electronics"
     ]
+
 }
