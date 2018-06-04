@@ -6,7 +6,7 @@ import numpy as np
 
 def measure_compatibility(probabilities, cost_matrix):
     """ Return vector of compabilities with given html
-    for all ad types (see data/keywords.json).
+    for all ad types (see data/metadata.json).
     Compatibility can be nagative, but is always <= 1.
     """
 

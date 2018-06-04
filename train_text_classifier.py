@@ -18,7 +18,7 @@ from word_model import WordModel
 def read_metadata():
     """ Returns tuple of lists of strings (adtypes, keywords, sitetypes)
     """
-    with open('data/keywords.json', 'r') as file:
+    with open('data/metadata.json', 'r') as file:
         data = json.loads(file.read())
     return data
 
