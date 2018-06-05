@@ -1,9 +1,9 @@
-import gensim
 from itertools import product
 
+import gensim
 import nltk
-from nltk.corpus import wordnet
 import numpy as np
+from nltk.corpus import wordnet
 
 VECTORS_FILE = './GoogleNews-vectors-negative300.bin'
 
