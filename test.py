@@ -7,6 +7,7 @@ Check ad compatibility for a few webites.
 import urllib.request
 
 import numpy as np
+import json
 
 from core import TextClassifier
 from core import WordModel
@@ -51,5 +52,59 @@ def simple_test():
         print('ads compatibilities:', measure_compatibility(probabilities, cost_matrix))
 
 
+def benchmark(threshold):
+    metadata = read_metadata()
+    cost_matrix = np.array(metadata['costmatrix'])
+    site_types = metadata['sitetypes']
+    ad_types = metadata['adtypes']
+
+    print("website classes:", site_types)
+    print("ad types:", ad_types)
+    print()
+
+    with open('data/test_data.json', 'r') as file:
+        test_data = json.loads(file.read())
+
+    word_model = WordModel(model_type='GoogleNews')
+    text_classifier = TextClassifier(word_model, filename='classifier_data')
+    total_best_acc, total_banned_acc = [], []
+
+
+
+    for site_type, site_dict in test_data.items():
+        banned_ads = [ad_types.index(banned) for banned in site_dict['banned']]
+        best_ad = ad_types.index(site_dict['best'])
+        best_acc_tmp, banned_acc_tmp = 0, 0
+
+        links = site_dict["links"]
+        for l in links:
+            html = fetch_url(l)
+            probabilities = np.array(classify_website(html, text_classifier))
+            proposed_ads = measure_compatibility(probabilities, cost_matrix)
+            banned_pred = np.flatnonzero(proposed_ads < threshold) # indicies of banned ads
+            best_ad_pred = np.argmax(proposed_ads)  # index of ad with highest score
+            if proposed_ads[best_ad_pred] < threshold:
+                best_ad_pred = -1
+            best_acc_tmp += (best_ad_pred == best_ad)
+            jaccard = len(np.intersect1d(banned_ads, banned_pred)) / len(np.union1d(banned_ads, banned_pred))
+            banned_acc_tmp += jaccard
+
+        site_banned_acc = banned_acc_tmp / len(links)
+        site_best_acc = best_acc_tmp / len(links)
+        total_banned_acc.append(site_best_acc)
+        total_best_acc.append(site_best_acc)
+
+        print(f'Type: {site_type}')
+        print(f'Best ad accuracy: {site_best_acc}')
+        print(f'Banned ads accuracy: {site_banned_acc}')
+        print()
+
+    print(f'TOTAL:')
+    print(f'Best ad accuracy: {np.mean(total_best_acc)}')
+    print(f'Banned ads accuracy: {np.mean(total_banned_acc)}')
+    print()             
+
+
 if __name__ == '__main__':
-    simple_test()
+    # simple_test()
+    benchmark(threshold=0.25)

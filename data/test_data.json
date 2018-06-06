@@ -1,0 +1,52 @@
+{	
+	"shop_alcohol" : {
+		"best": "alcohol",
+		"banned": ["online_games"],
+		"links": [
+			"https://www.thedrinkshop.com/",
+			"http://www.totalwine.com/spirits/c/c0030",
+			"https://drizly.com/",
+			"https://bottle.shop/",
+			"http://www.drinkingdiaries.com/",
+			"http://www.whiskyfun.com/",
+			"https://www.masterofmalt.com/blog/",
+			"https://www.whisqy.com/blog/en/",
+			"https://boakandbailey.com/",
+			"http://barclayperkins.blogspot.com/"
+		]
+	},
+
+	"general_store": {
+		"best": "food",
+		"banned": ["online_games"],
+		"links": [
+			"http://iamafoodblog.com/",
+			"https://greatist.com/eat/best-food-blogs-2016",
+			"https://cookieandkate.com/how-to-start-a-food-blog/",
+			"http://psychologyofeating.com/top-food-blogs/",
+			"https://www.jamieoliver.com/recipes/stew-recipes/venison-shanks-juniper-amp-redcurrants/",
+			"https://www.allrecipes.com/recipe/50409/pork-chops-with-dill-pickle-marinade/?internalSource=streams&referringId=17562&referringContentType=recipe%20hub&clickId=st_trending_s",
+			"https://www.delish.com/cooking/recipe-ideas/a21097616/grilled-chicken-salad-recipe/",
+			"https://www.foodnetwork.com/healthyeats/recipes/2013/02/5-easy-recipes-for-busy-weeknights-healthy",
+			"https://www.tripadvisor.com/Restaurant_Review-g29220-d5768632-Reviews-Hali_imaile_General_Store-Maui_Hawaii.html",
+			"https://easyrecipedepot.com/best-food-blogs/"
+		]
+	},
+
+	"electonic_shop" : { 
+		"best": "electronics",
+		"banned": ["alcohol", "food"],
+		"links": [
+			"https://www.overstock.com/Electronics/2/store.html",
+			"https://www.walmart.com/cp/electronics/3944",
+			"https://www.amazon.in/OnePlus-Mirror-Black-64GB-Memory/dp/B0756Z43QS/ref=hsx_crw_1389401031_tl_2?pf_rd_p=5bce9f37-e1a0-471a-b819-40361ce65f3d&pf_rd_s=merchandised-search-20&pf_rd_t=101&pf_rd_i=1389401031&pf_rd_m=A1VBAL9TL5WCBF&pf_rd_r=FR6MYN1MAY7GNG1V11H6&pf_rd_r=FR6MYN1MAY7GNG1V11H6&pf_rd_p=5bce9f37-e1a0-471a-b819-40361ce65f3d",
+			"https://pl.mouser.com/",
+			"https://thewirecutter.com/electronics/",
+			"https://www.zdnet.com/blog/cell-phones/",
+			"https://www.computeruniverse.net/en/",
+			"http://www.electronics-lab.com/blog/",
+			"https://www.sparkfun.com/news",
+			"https://blog.startingelectronics.com/"
+		]
+	}
+}
