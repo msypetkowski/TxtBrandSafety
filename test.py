@@ -91,7 +91,7 @@ def benchmark(threshold):
 
         site_banned_acc = banned_acc_tmp / len(links)
         site_best_acc = best_acc_tmp / len(links)
-        total_banned_acc.append(site_best_acc)
+        total_banned_acc.append(site_banned_acc)
         total_best_acc.append(site_best_acc)
 
         print(f'Type: {site_type}')
