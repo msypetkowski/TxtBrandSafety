@@ -18,23 +18,30 @@
 
 \section{General information}
 
-The system provides brand safety functionality.
+The system provides brand safety functionality --
+answer queries with a html document as an argument.
+The answer is vector of advertisement types cmpatibilities.
+These values can be thresholded for discrimination of incompatible
+ads or for selecting best ads for the given website.
+
+
+Git hub repository: \url{https://github.com/msypetkowski/TxtBrandSafety}.
 
 Most important tools and languages:
 \begin{itemize}
     \item \textbf{Python}\footnote{\url{https://www.python.org/}}
         - the whole project will be written in python
     \item \textbf{NumPy}\footnote{\url{http://www.numpy.org/}}
-    \item \textbf{scikit-learn}\footnote{\url{http://www.numpy.org/}}
-    \item \textbf{nltk}\footnote{\url{http://www.numpy.org/}}
-    \item \textbf{gensim}\footnote{\url{http://www.numpy.org/}}
-    \item \textbf{flask}\footnote{\url{http://www.numpy.org/}}
+    \item \textbf{scikit-learn}\footnote{\url{http://scikit-learn.org/stable/index.html}}
+    \item \textbf{nltk}\footnote{\url{https://www.nltk.org/}}
+    \item \textbf{gensim}\footnote{\url{https://radimrehurek.com/gensim/}}
+    \item \textbf{flask}\footnote{\url{http://flask.pocoo.org/}}
 \end{itemize}
 
 
 \section{Discriminator}
 In text processing system, we use ready word embeddings --
-word vector made with Google News data (it has 3 million 300-dimension English word vectors).
+\texttt{word2vec} is made with Google News data (it has 3 million 300-dimension English word vectors).
 
 
 We support the following advertisement types:
@@ -87,6 +94,7 @@ Best results were achieved by SVM (90\% accuracy - measured with 5 fold cross-va
 
 
 \subsection{Measuring advertisement compatibility}
+\label{mainlogic}
 
 We manually define a cost matrix $C(t, c)$ 
 with $|T|$ rows and $|C|$ columns.
@@ -102,28 +110,26 @@ where $P(c)$ is predicted probability of the text document having type $c$.
 
 
 
-% \section{Services types}
-% We decided have 2 types of services.
-% 
-% \subsection{Main service}
-% 
-% This service accepts queries from client applications.
-% The query argument will be the website body (html code).
-% Services of this type will respond with list of decision for each advertisement type
-% (whether the advertisement of given type conflict with the given website).
-% The website code is passed to a text processing service.
-% The service will perform load balancing by employing proper text processing services
-% (e.g. by random choice).
-% 
-% 
-% \subsection{Text extraction and processing service}
-% A website will be represented by it's whole html code.
-% This service will obtain raw text fragments from it.
-% This service will answer queries by returning vector of length of advertisement types.
-% The vector will contain probabilities whether placing an advertisement of given type
-% on the website (that query is about) is appriopriate.
-% 
-% We are planning to use GPU acceration for faster text processing.
+\section{Services/Agents}
+Our whole system is stateless.
+We have 2 types of services.
+Our system architecture is perfectly scallable (horizontally).
+
+\subsection{Front service}
+
+This service accepts queries from client applications.
+The query argument is the website body (html code).
+The response is a list of compatibility coeficients for predefined advertisement types.
+The website code is passed to randomly selected (for load balancing) worker service.
+See the project's `README.md` for deployment instructions.
+
+
+\subsection{Worker service}
+A website is represented by it's html code.
+This service extacts raw text from it and answer queries by returning vector of length of advertisement types
+(with respective compatibilities).
+It basically implements our whole logic (see section \ref{mainlogic}.
+See the project's `README.md` for deployment instructions.
 
 
 \end{document}

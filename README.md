@@ -1,7 +1,7 @@
 Text based brand safety system
 ==============================
 
-Word embeddings can be downloaded
+`word2vec` embeddings can be downloaded
 [here](https://drive.google.com/uc?id=0B7XkCwpI5KDYNlNUTTlSS21pQmM&export=download).
 
 Python libaries used:
@@ -23,16 +23,30 @@ Classifier validation:
 ./train_text_classifier.py validate
 ```
 
+Benchmark:
+```
+./test.py
+```
+
+
 Running agents
 -----------
-Running single front agent
+Before running agents, website classifier
+needs to be trained with `./train_text_classifier.py`.
+
+Running single front agent:
 ```
-python agents/front_agent.py
+./start_front_agent.py
+```
+
+Running worker agents:
+```
+./start_worker.py <front agent ip address>
 ```
 
 Usage
 -----------
 Following command returns vector of compability measurement for given webiste code:
 ```
-curl -X POST localhost:8060/compat -b "<html>Some website code<\html>"
+curl -X POST localhost:5000/compat -b "<html>Some website code<\html>"
 ```
