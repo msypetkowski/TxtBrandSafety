@@ -2,6 +2,18 @@ from pulsar.apps.wsgi import Router
 from pulsar.apps.wsgi.handlers import WsgiHandler
 from pulsar.apps.wsgi import WSGIServer, WsgiResponse
 
+from threading import Thread
+
+class FrontAgent(Thread):
+
+    def __init__(self):
+        Thread.__init__(self)
+        pass
+
+    def listen_for_workers():
+        pass
+
+global_agent = FrontAgent()
 
 blueprint = Router('/')
 
@@ -22,4 +34,6 @@ def server(**kwargs):
 
 
 if __name__ == '__main__':
+    global_agent.start()
     server().start()
+    global_agent.join()
