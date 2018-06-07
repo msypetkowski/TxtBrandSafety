@@ -1,0 +1,129 @@
+\documentclass[a4paper]{article}
+
+\usepackage[a4paper,  margin=1.0in]{geometry}
+
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{hyperref}
+
+
+\usepackage[utf8]{inputenc}
+\begin{document}
+
+
+\title{Text-based brand safety system}
+
+\author{Mikołaj Ciesielski, Bartosz Paszko, Michał Sypetkowski}
+\maketitle
+
+\section{General information}
+
+The system provides brand safety functionality.
+
+Most important tools and languages:
+\begin{itemize}
+    \item \textbf{Python}\footnote{\url{https://www.python.org/}}
+        - the whole project will be written in python
+    \item \textbf{NumPy}\footnote{\url{http://www.numpy.org/}}
+    \item \textbf{scikit-learn}\footnote{\url{http://www.numpy.org/}}
+    \item \textbf{nltk}\footnote{\url{http://www.numpy.org/}}
+    \item \textbf{gensim}\footnote{\url{http://www.numpy.org/}}
+    \item \textbf{flask}\footnote{\url{http://www.numpy.org/}}
+\end{itemize}
+
+
+\section{Discriminator}
+In text processing system, we use ready word embeddings --
+word vector made with Google News data (it has 3 million 300-dimension English word vectors).
+
+
+We support the following advertisement types:
+\begin{enumerate}
+    \item alcohol
+    \item food
+    \item electronics
+    \item jobs
+    \item online games
+\end{enumerate}
+These are defined in \texttt{data/metadata.json}, and can be easily changed there.
+
+We support the following website types:
+\begin{enumerate}
+    \item alcohol
+    \item food
+    \item electronics
+    \item jobs
+    \item online games
+\end{enumerate}
+
+For each website type we created small datasets using text fragments from real websites.
+Let $T$ be set of advertisement types and $C$ -- set website types.
+
+
+\subsection{Website classification}
+
+Let's call a text fragment extracted from website a document.
+% For each document class $c_i\in{C}$, we have a list of keywords:
+% \begin{equation}
+%     (k_{i,1}, k_{i,2}, \ldots, k_{i, n_i})
+% \end{equation}
+For each document, we are able to calculate "content" (real number) of a given keyword $k$,
+We do that using our embeddings -- gensim library provides similarity methods for 2 words.
+We calculate mean similarity for each word in the document to the keyword.
+
+% We concatenate keywords lists from all defined classes:
+% \begin{equation}
+%     (k_{1,1}, k_{1,2}, \ldots, k_{1, n_1},
+%     k_{2,1}, k_{2,2}, \ldots, k_{2, n_2},
+%     \ldots,
+%     k_{|C|,1}, k_{|C|,2}, \ldots, k_{|C|, n_{|C|}})
+% \end{equation}
+Then we treat "contents" of the keywords as attributes of classification example.
+We create training examples from small manually created dataset - one training example from one text in dataset.
+
+Then we feed these training examples into a classifier.
+We tried SVM and naive bayes classifiers.
+Best results were achieved by SVM (90\% accuracy - measured with 5 fold cross-validation).
+
+
+\subsection{Measuring advertisement compatibility}
+
+We manually define a cost matrix $C(t, c)$ 
+with $|T|$ rows and $|C|$ columns.
+The matrix defined is in file \texttt{data/metadata.json},
+and can be easily changed.
+
+We perform discrimination for each advertisement type $t$
+by thresholding the following sum:
+\begin{equation}
+    \sum_{c\in{Y}} {C(t, c) \cdot P(c)}
+\end{equation}
+where $P(c)$ is predicted probability of the text document having type $c$.
+
+
+
+% \section{Services types}
+% We decided have 2 types of services.
+% 
+% \subsection{Main service}
+% 
+% This service accepts queries from client applications.
+% The query argument will be the website body (html code).
+% Services of this type will respond with list of decision for each advertisement type
+% (whether the advertisement of given type conflict with the given website).
+% The website code is passed to a text processing service.
+% The service will perform load balancing by employing proper text processing services
+% (e.g. by random choice).
+% 
+% 
+% \subsection{Text extraction and processing service}
+% A website will be represented by it's whole html code.
+% This service will obtain raw text fragments from it.
+% This service will answer queries by returning vector of length of advertisement types.
+% The vector will contain probabilities whether placing an advertisement of given type
+% on the website (that query is about) is appriopriate.
+% 
+% We are planning to use GPU acceration for faster text processing.
+
+
+\end{document}
