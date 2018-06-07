@@ -9,7 +9,6 @@ Python libaries used:
 * gensim
 * nltk
 * numpy
-* pulsar
 
 Website classification
 -----------
