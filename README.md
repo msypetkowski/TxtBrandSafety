@@ -9,6 +9,7 @@ Python libaries used:
 * gensim
 * nltk
 * numpy
+* flask
 
 Website classification
 -----------
@@ -48,5 +49,5 @@ Usage
 -----------
 Following command returns vector of compability measurement for given webiste code:
 ```
-curl -X POST localhost:5000/compat -b "<html>Some website code<\html>"
+curl -X POST localhost:5000/compat -d "<html>Some website code<\html>"
 ```

@@ -17,6 +17,9 @@ class WorkerConnection():
     def query(self, query_body):
         query_body = query_body.encode()
         print('new query for worker:', self.addr)
+        if not self._conn.is_valid():
+            print('broken connection')
+            return None
         self._conn.send(query_body)
         if not self._conn.is_valid():
             print('broken connection')

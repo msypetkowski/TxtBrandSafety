@@ -9,7 +9,8 @@ global_agent = FrontAgent()
 
 @app.route('/compat', methods=['GET', 'POST'])
 def calc_compatibility():
-    data = list(request.form.keys())[0]
+    data = '\n'.join(list(request.form.keys()))
+    print('query has length:', len(data))
     # for i in range(10**8):
     #     i = i * 2
     ret = global_agent.query(data)
