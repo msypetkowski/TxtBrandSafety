@@ -10,26 +10,31 @@ class WorkerConnection():
         Thread.__init__(self)
         self.addr = addr
         self._conn = Connection(sock=socket)
+        self._lock = Lock()
 
     def alive(self):
         return self._conn.is_valid()
 
     def query(self, query_body):
-        query_body = query_body.encode()
-        print('new query for worker:', self.addr)
-        if not self._conn.is_valid():
-            print('broken connection')
-            return None
-        self._conn.send(query_body)
-        if not self._conn.is_valid():
-            print('broken connection')
-            return None
-        ret = self._conn.receive()
-        if not self._conn.is_valid():
-            print('broken connection')
-            return None
-        print('received', ret)
-        return ret
+        self._lock.acquire()
+        try:
+            query_body = query_body.encode()
+            print('new query for worker:', self.addr)
+            if not self._conn.is_valid():
+                print('broken connection')
+                return None
+            self._conn.send(query_body)
+            if not self._conn.is_valid():
+                print('broken connection')
+                return None
+            ret = self._conn.receive()
+            if not self._conn.is_valid():
+                print('broken connection')
+                return None
+            print('received', ret)
+            return ret
+        finally:
+            self._lock.release()
 
 
 class FrontAgent(Thread):
