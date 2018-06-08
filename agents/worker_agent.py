@@ -45,4 +45,4 @@ class WorkerAgent:
                     print("Broken connection")
                     return
         finally:
-            self._sock.close()
+            self._conn.close()
