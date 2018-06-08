@@ -28,6 +28,7 @@ Benchmark:
 ```
 ./test.py
 ```
+This script uses test data from file `data/test_data.json`.
 
 
 Running agents

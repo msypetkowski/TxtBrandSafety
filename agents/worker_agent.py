@@ -28,7 +28,7 @@ class WorkerAgent:
         print('starting main loop')
         while True:
             html = self._conn.receive()
-            print("new task")
+            print("----------new task")
             if not self._conn.is_valid():
                 print("Broken connection")
                 return

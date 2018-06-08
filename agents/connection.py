@@ -43,8 +43,6 @@ class Connection:
                     return None
                 chunks.append(chunk)
                 bytes_recd = bytes_recd + len(chunk)
-                print('bytes_recd', bytes_recd)
-            print('receive ended')
             return b''.join(chunks)
         except BrokenPipeError:
             self._valid = False

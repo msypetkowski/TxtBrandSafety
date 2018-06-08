@@ -4,23 +4,23 @@ from flask import request, Flask
 from agents.front_agent import FrontAgent
 
 app = Flask(__name__)
-global_agent = FrontAgent()
+agent = FrontAgent()
 
 
 @app.route('/compat', methods=['GET', 'POST'])
 def calc_compatibility():
     data = '\n'.join(list(request.form.keys()))
-    print('query has length:', len(data))
+    print('-----got query of length:', len(data))
     # for i in range(10**8):
     #     i = i * 2
-    ret = global_agent.query(data)
+    ret = agent.query(data)
     if ret is None:
         return 'No workers available - cannot process the query.'
     return ret
 
 
 if __name__ == '__main__':
-    global_agent.start()
+    agent.start()
     app.run()
-    global_agent.stop()
-    global_agent.join()
+    agent.stop()
+    agent.join()

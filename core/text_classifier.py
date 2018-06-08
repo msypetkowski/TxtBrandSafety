@@ -2,7 +2,7 @@ import json
 import pickle
 
 import numpy as np
-from matplotlib import pyplot as plt
+# from matplotlib import pyplot as plt
 from sklearn import svm
 from sklearn.model_selection import cross_val_score
 from sklearn.naive_bayes import GaussianNB
@@ -76,11 +76,11 @@ class TextClassifier:
         print(np.mean(d1, 0))
         print(np.mean(d2, 0))
         print(np.mean(d3, 0))
-        plt.scatter(d1[:, 0], d1[:, 6], s=80, c=d1[:, 12], marker='+')
-        plt.scatter(d2[:, 0], d2[:, 6], s=80, c=d2[:, 12], marker='>')
-        plt.scatter(d3[:, 0], d3[:, 6], s=80, c=d3[:, 12], marker=(5, 0))
-        plt.tight_layout()
-        plt.show()
+        # plt.scatter(d1[:, 0], d1[:, 6], s=80, c=d1[:, 12], marker='+')
+        # plt.scatter(d2[:, 0], d2[:, 6], s=80, c=d2[:, 12], marker='>')
+        # plt.scatter(d3[:, 0], d3[:, 6], s=80, c=d3[:, 12], marker=(5, 0))
+        # plt.tight_layout()
+        # plt.show()
         print()
 
         # train classifier
