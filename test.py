@@ -69,8 +69,6 @@ def benchmark(threshold):
     text_classifier = TextClassifier(word_model, filename='classifier_data')
     total_best_acc, total_banned_acc = [], []
 
-
-
     for site_type, site_dict in test_data.items():
         banned_ads = [ad_types.index(banned) for banned in site_dict['banned']]
         best_ad = ad_types.index(site_dict['best'])
@@ -81,7 +79,7 @@ def benchmark(threshold):
             html = fetch_url(l)
             probabilities = np.array(classify_website(html, text_classifier))
             proposed_ads = measure_compatibility(probabilities, cost_matrix)
-            banned_pred = np.flatnonzero(proposed_ads < threshold) # indicies of banned ads
+            banned_pred = np.flatnonzero(proposed_ads < threshold)  # indicies of banned ads
             best_ad_pred = np.argmax(proposed_ads)  # index of ad with highest score
             if proposed_ads[best_ad_pred] < threshold:
                 best_ad_pred = -1
@@ -102,7 +100,7 @@ def benchmark(threshold):
     print(f'TOTAL:')
     print(f'Best ad accuracy: {np.mean(total_best_acc)}')
     print(f'Banned ads accuracy: {np.mean(total_banned_acc)}')
-    print()             
+    print()
 
 
 if __name__ == '__main__':

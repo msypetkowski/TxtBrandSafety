@@ -5,11 +5,11 @@ import socket
 from agents.connection import Connection
 
 
-class WorkerConnection():
-    def __init__(self, socket, addr):
-        Thread.__init__(self)
+class WorkerConnection:
+    def __init__(self, sock, addr):
+        super().__init__()
         self.addr = addr
-        self._conn = Connection(sock=socket)
+        self._conn = Connection(sock=sock)
         self._lock = Lock()
 
     def alive(self):
@@ -44,6 +44,7 @@ class FrontAgent(Thread):
         self._results = {}
         self._workers = []
         self._stopped = False
+        self._sock = None
         pass
 
     def run(self):

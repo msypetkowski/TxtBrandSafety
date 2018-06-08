@@ -1,7 +1,7 @@
 import socket
 
-class Connection:
 
+class Connection:
     def __init__(self, sock=None):
         if sock is None:
             self.sock = socket.socket()

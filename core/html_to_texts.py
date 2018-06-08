@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 
 
 def extract_texts_from_html(site):
-    def additional_filter(site):
-        txt = re.sub("(?s)<[^>]*>(\\s*<[^>]*>)*", r" ", site.replace('-->', '\n'))
+    def additional_filter(s):
+        txt = re.sub("(?s)<[^>]*>(\\s*<[^>]*>)*", r" ", s.replace('-->', '\n'))
         return txt.strip()
 
     soup = BeautifulSoup(site, "html.parser")

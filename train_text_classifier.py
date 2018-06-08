@@ -1,18 +1,10 @@
 #!/usr/bin/env python3
 
-import json
 import os
-import pickle
 import sys
 
-import matplotlib.pyplot as plt
 import numpy as np
-from sklearn import svm
-from sklearn.model_selection import cross_val_score
-from sklearn.naive_bayes import GaussianNB
-from sklearn.preprocessing import normalize
 
-from core import read_metadata
 from core.text_classifier import TextClassifier
 from core.word_model import WordModel
 
@@ -27,12 +19,12 @@ def main():
     else:
         text_classifier.train_classifier(classifier_type='svm')
         text_classifier.save()
-        while True:
-            text = input('Enter text to classify:')
+        # while True:
+        #     text = input('Enter text to classify:')
 
-            probabilities = text_classifier.classify_texts([text])[0]
-            print("predicted probabilities:", probabilities)
-            print("probabilities argmax:", np.argmax(probabilities))
+        #     probabilities = text_classifier.classify_texts([text])[0]
+        #     print("predicted probabilities:", probabilities)
+        #     print("probabilities argmax:", np.argmax(probabilities))
 
 
 if __name__ == '__main__':

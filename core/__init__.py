@@ -9,8 +9,9 @@ def read_metadata():
     return data
 
 
-from .word_model import WordModel
-from .text_classifier import TextClassifier
 from .measure_compatibility import measure_compatibility, classify_website
+from .text_classifier import TextClassifier
+from .word_model import WordModel
+
 
 __all__ = [WordModel, TextClassifier, classify_website, measure_compatibility, read_metadata]

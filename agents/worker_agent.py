@@ -1,17 +1,16 @@
 import numpy as np
 
-from . import MAX_WEBSITE_SIZE, MANAGING_PORT
-from .connection import Connection
 from core import TextClassifier
 from core import WordModel
 from core import classify_website
 from core import measure_compatibility
 from core import read_metadata
+from . import MANAGING_PORT
+from .connection import Connection
 
 
 class WorkerAgent:
-
-    def __init__ (self, front_addr):
+    def __init__(self, front_addr):
         metadata = read_metadata()
         self._cost_matrix = np.array(metadata['costmatrix'])
         self._site_types = metadata['sitetypes']
@@ -38,7 +37,7 @@ class WorkerAgent:
                 proposed_ads = measure_compatibility(probabilities, self._cost_matrix)
                 # proposed_ads = [1,2,3,4,5]
                 print("probabilities:", probabilities)
-                data = {adtype:r for adtype, r in zip(self._metadata["adtypes"], proposed_ads)}
+                data = {adtype: r for adtype, r in zip(self._metadata["adtypes"], proposed_ads)}
                 print("proposed_ads:", data)
                 self._conn.send(str(data).encode())
                 if not self._conn.is_valid():
