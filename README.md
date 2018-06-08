@@ -48,7 +48,8 @@ Running worker agents:
 
 Usage
 -----------
-Following command returns vector of compability measurement for given webiste code:
+Following commands returns vector of compability measurement for given webiste code:
 ```
 curl -X POST localhost:5000/compat -d "<html>Some website code<\html>"
+curl -X POST localhost:5000/compat -F "data=@index.
 ```

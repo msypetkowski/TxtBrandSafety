@@ -31,7 +31,12 @@ class Connection:
 
     def receive(self):
         try:
-            msglen = int(self.sock.recv(10))
+            try:
+                msglen = int(self.sock.recv(10))
+            except ValueError:
+                self._valid = False
+                return None
+
             print('receiving msg of length', msglen)
             chunks = []
             bytes_recd = 0
@@ -50,3 +55,6 @@ class Connection:
 
     def is_valid(self):
         return self._valid
+
+    def close(self):
+        return self.sock.close()

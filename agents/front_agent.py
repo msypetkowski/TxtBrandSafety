@@ -18,7 +18,7 @@ class WorkerConnection():
     def query(self, query_body):
         self._lock.acquire()
         try:
-            query_body = query_body.encode()
+            query_body = query_body
             print('new query for worker:', self.addr)
             if not self._conn.is_valid():
                 print('broken connection')
@@ -54,9 +54,16 @@ class FrontAgent(Thread):
         while True:
             if self._stopped:
                 break
-            s, addr = sock.accept()
+            sock.settimeout(0.5)
+            try:
+                s, addr = sock.accept()
+            except socket.timeout:
+                if self._stopped:
+                    break
+                continue
             print('new worker:', addr)
             self._workers.append(WorkerConnection(s, addr))
+        self._sock.close()
 
     def query(self, query_body):
         while True:
@@ -75,4 +82,3 @@ class FrontAgent(Thread):
 
     def stop(self):
         self._stopped = True
-        self._sock.close()
