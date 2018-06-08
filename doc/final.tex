@@ -52,7 +52,6 @@ We support the following advertisement types:
     \item jobs
     \item online games
 \end{enumerate}
-These are defined in \texttt{data/metadata.json}, and can be easily changed there.
 
 We support the following website types:
 \begin{enumerate}
@@ -63,8 +62,10 @@ We support the following website types:
     \item online games
 \end{enumerate}
 
+All this data is defined in \texttt{data/metadata.json}, and can be easily changed there.
 For each website type we created small datasets using text fragments from real websites.
-Let $T$ be set of advertisement types and $C$ -- set website types.
+There are JSON files in \texttt{data} directory corresponding to particular webiste types
+(e.g. \texttt{data/alcohol.json}).
 
 
 \subsection{Website classification}
@@ -74,7 +75,7 @@ Let's call a text fragment extracted from website a document.
 % \begin{equation}
 %     (k_{i,1}, k_{i,2}, \ldots, k_{i, n_i})
 % \end{equation}
-For each document, we are able to calculate "content" (real number) of a given keyword $k$,
+For each document, we are able to calculate "content" (real number) of a given keyword,
 We do that using our embeddings -- gensim library provides similarity methods for 2 words.
 We calculate mean similarity for each word in the document to the keyword.
 
@@ -96,12 +97,13 @@ Best results were achieved by SVM (90\% accuracy - measured with 5 fold cross-va
 \subsection{Measuring advertisement compatibility}
 \label{mainlogic}
 
+Let $T$ be set of advertisement types and $C$ -- set website types.
 We manually define a cost matrix $C(t, c)$ 
 with $|T|$ rows and $|C|$ columns.
 The matrix defined is in file \texttt{data/metadata.json},
 and can be easily changed.
 
-We perform discrimination for each advertisement type $t$
+Discrimination can be performed for each advertisement type $t$
 by thresholding the following sum:
 \begin{equation}
     \sum_{c\in{Y}} {C(t, c) \cdot P(c)}
@@ -121,7 +123,9 @@ This service accepts queries from client applications.
 The query argument is the website body (html code).
 The response is a list of compatibility coeficients for predefined advertisement types.
 The website code is passed to randomly selected (for load balancing) worker service.
-See the project's `README.md` for deployment instructions.
+
+There can be only one such agent in the system.
+See the project's \texttt{README.md} for deployment instructions.
 
 
 \subsection{Worker service}
@@ -129,7 +133,9 @@ A website is represented by it's html code.
 This service extacts raw text from it and answer queries by returning vector of length of advertisement types
 (with respective compatibilities).
 It basically implements our whole logic (see section \ref{mainlogic}.
-See the project's `README.md` for deployment instructions.
+
+This service can be deployed on multiple machines in multiple instances.
+See the project's \texttt{README.md} for deployment instructions.
 
 
 \end{document}
