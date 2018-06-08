@@ -3,7 +3,7 @@ Text based brand safety system
 
 The system provides brand safety functionality --
 answer queries with a html document as an argument.
-The answer is vector of advertisement types cmpatibilities.
+The answer is vector of compatibilities for each predefined advertisement type.
 These values can be thresholded for discrimination of incompatible
 ads or for selecting best ads for the given website.
 

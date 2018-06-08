@@ -20,7 +20,7 @@
 
 The system provides brand safety functionality --
 answer queries with a html document as an argument.
-The answer is vector of advertisement types cmpatibilities.
+The answer is vector of advertisement types compatibilities.
 These values can be thresholded for discrimination of incompatible
 ads or for selecting best ads for the given website.
 
@@ -64,7 +64,7 @@ We support the following website types:
 
 All this data is defined in \texttt{data/metadata.json}, and can be easily changed there.
 For each website type we created small datasets using text fragments from real websites.
-There are JSON files in \texttt{data} directory corresponding to particular webiste types
+There are JSON files in \texttt{data} directory corresponding to particular website types
 (e.g. \texttt{data/alcohol.json}).
 
 
@@ -90,7 +90,7 @@ Then we treat "contents" of the keywords as attributes of classification example
 We create training examples from small manually created dataset - one training example from one text in dataset.
 
 Then we feed these training examples into a classifier.
-We tried SVM and naive bayes classifiers.
+We tried SVM and naive Bayes classifiers.
 Best results were achieved by SVM (90\% accuracy - measured with 5 fold cross-validation).
 
 
@@ -121,7 +121,7 @@ Our system architecture is in practice perfectly scallable (horizontally).
 
 This service accepts queries from client applications.
 The query argument is the website body (html code).
-The response is a list of compatibility coeficients for predefined advertisement types.
+The response is a list of compatibility coefficients for predefined advertisement types.
 The website code is passed to randomly selected (for load balancing) worker service.
 
 There can be only one such agent in the system.
@@ -130,7 +130,7 @@ See the project's \texttt{README.md} for deployment instructions.
 
 \subsection{Worker service}
 A website is represented by it's html code.
-This service extacts raw text from it and answer queries by returning vector of length of advertisement types
+This service extracts raw text from it and answer queries by returning vector of length of advertisement types
 (with respective compatibilities).
 It basically implements our whole logic (see section \ref{mainlogic}.
 
