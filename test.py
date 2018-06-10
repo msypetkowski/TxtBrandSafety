@@ -108,4 +108,4 @@ def benchmark(threshold):
 
 if __name__ == '__main__':
     # simple_test()
-    benchmark(threshold=0.25)
+    benchmark(threshold=0.4)

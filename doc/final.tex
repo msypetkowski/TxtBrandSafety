@@ -113,9 +113,13 @@ and can be easily modified. Default matrix is shown in table \ref{table:costmx}.
         & shop alcohol & general store  & "electronic shop \\
     \hline
           alcohol & 0& 0.5&   1 \\
+    \hline
         food & 0.2&   0&   1 \\
+    \hline
         electronics & 0.5& 0.5&   0 \\
+    \hline
         jobs & 0.2& 0.2& 0.2 \\
+    \hline
           online games & 1&   1& 0.2 \\
     \hline
     \end{tabular}
@@ -125,7 +129,7 @@ and can be easily modified. Default matrix is shown in table \ref{table:costmx}.
 Discrimination can be performed for each advertisement type $t$
 by thresholding the following sum:
 \begin{equation}
-    \sum_{c\in{Y}} {C(t, c) \cdot P(c)}
+    \sum_{c\in{C}} {C(t, c) \cdot P(c)}
 \end{equation}
 where $P(c)$ is predicted probability of the text document having type $c$.
 
@@ -136,7 +140,6 @@ where $P(c)$ is predicted probability of the text document having type $c$.
 We prepared a script for measuring website classification and
 advertisement compatibility.
 It is implemented \texttt{test.py}.
-
 
 The benchmark is divided into 3 tests:
 \begin{enumerate}
@@ -151,9 +154,9 @@ The benchmark is divided into 3 tests:
         and banned should be \texttt{alcohol} and \texttt{food}.
 \end{enumerate}
 For each test, we prepare 10 website examples.
-We consider ads banned if the compatibility value is below 0.25.
-Best ad is defined as an ad with highest compatibility.
-Summary results are shown in table \ref{table:testResults}.
+
+
+\subsubsection {Website classification results}
 Predicted website class probabilities for each tested document are shown in
 tables
 \ref{table:res1},
@@ -166,6 +169,19 @@ SVM works well in general on small datasets -- has efficient generalization.
 We use keywords contents as attributes, so maximizing decision margins (like SVM does)
 seems to be a good idea in a common sense.
 
+\subsubsection {Advertisement compatibility measurement results}
+We consider ads banned if the compatibility value is below 0.4.
+Best ad is defined as an ad with highest compatibility.
+Best ad accuracy is simply a a ratio of correct predictions
+of the most compatibile ads to their total amount.
+Banned ads accuracy is calculated with Jaccard index.
+Jaccard index is given by:
+\begin{equation}
+    J(A,B) = \frac{|A\cap B|}{|A\cup B|}
+\end{equation}
+where A is a set of ads that should be banned and B is a set of ads that were predicted to be banned.
+The results are shown in table \ref{table:testResults}.
+
 
 \begin{table}[!hbt]
     \caption{ Summary of the experiment accuracy results
@@ -175,20 +191,23 @@ seems to be a good idea in a common sense.
 \begin{center}
     \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
     \hline
-        First experiment Best ad accuracy:  &
+        Alcohol shop ground truth class experiment best ad accuracy:  &
         0.9 \\
-        First experiment Banned ads accuracy: &
+        Alcohol shop ground truth class experiment banned ads accuracy: &
         1.0 \\
     \hline
-        Second experiment Best ad accuracy: &
+        General store ground truth class experiment best ad accuracy: &
         0.9 \\
-        Second experiment Banned ads accuracy: &
+        General store ground truth class experiment banned ads accuracy: &
+        0.95 \\
+    \hline
+        Electronic shop ground truth class experiment best ad accuracy: &
+        0.9 \\
+        Electronic shop ground truth class experiment banned ads accuracy: &
         0.9 \\
     \hline
-        Third experiment Best ad accuracy: &
-        0.9 \\
-        Third experiment Banned ads accuracy: &
-        0.85 \\
+        Total best ad accuracy & 0.9 \\
+        Total banned ads accuracy & 0.95 \\
     \hline
     \end{tabular}
 \end{center}
