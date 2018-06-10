@@ -76,8 +76,11 @@ def benchmark(threshold):
 
         links = site_dict["links"]
         for l in links:
+            # print('\\verb|', l, '| &')
             html = fetch_url(l)
             probabilities = np.array(classify_website(html, text_classifier))
+            # print('&'.join(map(str,[round(p, 3) for p in probabilities])))
+            # print('\\\\')
             proposed_ads = measure_compatibility(probabilities, cost_matrix)
             banned_pred = np.flatnonzero(proposed_ads < threshold)  # indicies of banned ads
             best_ad_pred = np.argmax(proposed_ads)  # index of ad with highest score

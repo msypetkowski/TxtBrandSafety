@@ -9,9 +9,9 @@ def classify_website(site, text_classifier):
     """ Returns vector of class probabilities
     """
     site = extract_texts_from_html(site)
-    print('Website text blocks count:', len(site))
+    # print('Website text blocks count:', len(site))
     site = ' '.join(site)
-    print('Website text length:', len(site))
+    # print('Website text length:', len(site))
     return text_classifier.classify_texts([site])[0]
 
 

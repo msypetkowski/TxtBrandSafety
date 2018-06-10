@@ -62,7 +62,7 @@ We support the following website types:
     \item online games
 \end{enumerate}
 
-All this data is defined in \texttt{data/metadata.json}, and can be easily changed there.
+All this data is defined in \texttt{data/metadata.json}, and can be easily modified there.
 For each website type we created small datasets using text fragments from real websites.
 There are JSON files in \texttt{data} directory corresponding to particular website types
 (e.g. \texttt{data/alcohol.json}).
@@ -93,7 +93,6 @@ Then we feed these training examples into a classifier.
 We tried SVM and naive Bayes classifiers.
 Best results were achieved by SVM (90\% accuracy - measured with 5 fold cross-validation).
 
-
 \subsection{Measuring advertisement compatibility}
 \label{mainlogic}
 
@@ -101,7 +100,27 @@ Let $T$ be set of advertisement types and $C$ -- set website types.
 We manually define a cost matrix $C(t, c)$ 
 with $|T|$ rows and $|C|$ columns.
 The matrix defined is in file \texttt{data/metadata.json},
-and can be easily changed.
+and can be easily modified. Default matrix is shown in table \ref{table:costmx}.
+
+\begin{table}[!hbt]
+    \caption{Manually defined default cost matrix.
+    \label{table:costmx}
+    }
+\footnotesize
+\begin{center}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+    \hline
+        & shop alcohol & general store  & "electronic shop \\
+    \hline
+          alcohol & 0& 0.5&   1 \\
+        food & 0.2&   0&   1 \\
+        electronics & 0.5& 0.5&   0 \\
+        jobs & 0.2& 0.2& 0.2 \\
+          online games & 1&   1& 0.2 \\
+    \hline
+    \end{tabular}
+\end{center}
+\end{table}
 
 Discrimination can be performed for each advertisement type $t$
 by thresholding the following sum:
@@ -110,6 +129,70 @@ by thresholding the following sum:
 \end{equation}
 where $P(c)$ is predicted probability of the text document having type $c$.
 
+
+
+\subsection{Website classification and compatibility measurement benchmark}
+
+We prepared a script for measuring website classification and
+advertisement compatibility.
+It is implemented \texttt{test.py}.
+
+
+The benchmark is divided into 3 tests:
+\begin{enumerate}
+    \item \texttt{shop\_alcohol} website clas test --
+        we assumed best advertisement type as \texttt{alcohol},
+        and banned should be \texttt{online\_games}.
+    \item \texttt{general\_store} website clas test --
+        we assumed best advertisement type as \texttt{food},
+        and banned should be \texttt{online\_games}.
+    \item \texttt{electronic\_shop} website clas test --
+        we assumed best advertisement type as \texttt{electronics},
+        and banned should be \texttt{alcohol} and \texttt{food}.
+\end{enumerate}
+For each test, we prepare 10 website examples.
+We consider ads banned if the compatibility value is below 0.25.
+Best ad is defined as an ad with highest compatibility.
+Summary results are shown in table \ref{table:testResults}.
+Predicted website class probabilities for each tested document are shown in
+tables
+\ref{table:res1},
+\ref{table:res2} and
+\ref{table:res3}.
+
+As we can see, the results are satisfactory event with our very small dataset
+that was created manually in a few minutes.
+SVM works well in general on small datasets -- has efficient generalization.
+We use keywords contents as attributes, so maximizing decision margins (like SVM does)
+seems to be a good idea in a common sense.
+
+
+\begin{table}[!hbt]
+    \caption{ Summary of the experiment accuracy results
+    \label{table:testResults}
+    }
+\footnotesize
+\begin{center}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+    \hline
+        First experiment Best ad accuracy:  &
+        0.9 \\
+        First experiment Banned ads accuracy: &
+        1.0 \\
+    \hline
+        Second experiment Best ad accuracy: &
+        0.9 \\
+        Second experiment Banned ads accuracy: &
+        0.9 \\
+    \hline
+        Third experiment Best ad accuracy: &
+        0.9 \\
+        Third experiment Banned ads accuracy: &
+        0.85 \\
+    \hline
+    \end{tabular}
+\end{center}
+\end{table}
 
 
 \section{Services/Agents}
@@ -137,5 +220,11 @@ It basically implements our whole logic (see section \ref{mainlogic}).
 This service can be deployed on multiple machines in multiple instances.
 See the project's \texttt{README.md} for deployment instructions.
 
+\newpage
+\appendix
+\section{Detailed benchmark results}
+% \label{singleResults}
+% \input{singleResults}
+\input{detailedResults}
 
 \end{document}
