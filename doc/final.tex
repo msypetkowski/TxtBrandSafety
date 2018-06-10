@@ -143,13 +143,13 @@ It is implemented \texttt{test.py}.
 
 The benchmark is divided into 3 tests:
 \begin{enumerate}
-    \item \texttt{shop\_alcohol} website clas test --
+    \item \texttt{shop\_alcohol} website class test --
         we assumed best advertisement type as \texttt{alcohol},
         and banned should be \texttt{online\_games}.
-    \item \texttt{general\_store} website clas test --
+    \item \texttt{general\_store} website class test --
         we assumed best advertisement type as \texttt{food},
         and banned should be \texttt{online\_games}.
-    \item \texttt{electronic\_shop} website clas test --
+    \item \texttt{electronic\_shop} website class test --
         we assumed best advertisement type as \texttt{electronics},
         and banned should be \texttt{alcohol} and \texttt{food}.
 \end{enumerate}
@@ -173,7 +173,7 @@ seems to be a good idea in a common sense.
 We consider ads banned if the compatibility value is below 0.4.
 Best ad is defined as an ad with highest compatibility.
 Best ad accuracy is simply a a ratio of correct predictions
-of the most compatibile ads to their total amount.
+of the most compatible ads to their total amount.
 Banned ads accuracy is calculated with Jaccard index.
 Jaccard index is given by:
 \begin{equation}
@@ -239,11 +239,39 @@ It basically implements our whole logic (see section \ref{mainlogic}).
 This service can be deployed on multiple machines in multiple instances.
 See the project's \texttt{README.md} for deployment instructions.
 
-\newpage
+\subsection {Performance benchmark}
+
+We tested performance with single and 2 worker services.
+We ran script \texttt{performance\_test.sh} using 1,2 and 3 workers.
+It sends parallelly 100 queries.
+We used html documents of sizes 138KB and 24KB.
+Results are shown in table \ref{table:perf}.
+In case of smaller query, the processing time is roughly proportional to the workers count,
+therefore our business functionality can be efficiently scaled horizontally.
+
+\begin{table}[!hbt]
+    \caption{ System performance measurement results (real time in seconds)
+    \label{table:perf}
+    }
+\footnotesize
+\begin{center}
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|}
+    \hline
+        query size & 1 worker & 2 workers & 3 workers\\
+    \hline
+        138KB & 36.132s&20.380s&13.606s\\
+    \hline
+        24KB &11.425s&6.795s&3.984s\\
+    \hline
+    \end{tabular}
+\end{center}
+\end{table}
+
 \appendix
-\section{Detailed benchmark results}
+\section{Detailed website classification benchmark results tables}
 % \label{singleResults}
 % \input{singleResults}
 \input{detailedResults}
 
 \end{document}
+
