@@ -18,7 +18,9 @@
 
 \section{Introduction}
 
-In online advertising context, brand safety refers to practises and tools allowing to ensure that an ad will not appear in a context that can damage the advertiser’s brand.
+In online advertising context,
+brand safety refers to practises and tools allowing to ensure that
+an ad will not appear in a context that can damage the advertiser’s brand.
 Our work focuses only on discrimination of incompatible ads, basing on
 the website text.
 
@@ -62,37 +64,38 @@ We support the following advertisement types:
 
 We support the following website types:
 \begin{enumerate}
-    \item alcohol
-    \item food
-    \item electronics
-    \item jobs
-    \item online games
+    \item alcohol shop
+    \item general store
+    \item electronic shop
 \end{enumerate}
 
 All this data is defined in \texttt{data/metadata.json}, and can be easily modified there.
 For each website type we created small datasets using text fragments from real websites.
 There are JSON files in \texttt{data} directory corresponding to particular website types
 (e.g. \texttt{data/alcohol.json}).
+There is about 30 examples (around 300 characters per example) per website class.
 
 
 \subsection{Website classification}
 
 Let's call a text fragment extracted from website a document.
-% For each document class $c_i\in{C}$, we have a list of keywords:
-% \begin{equation}
-%     (k_{i,1}, k_{i,2}, \ldots, k_{i, n_i})
-% \end{equation}
-For each document, we are able to calculate "content" (real number) of a given keyword,
+Let $T$ be set of advertisement types and $C$ -- set website types.
+For each document class $c_i\in{C}$, we have a list of keywords:
+\begin{equation}
+    (k_{i,1}, k_{i,2}, \ldots, k_{i, n_i})
+\end{equation}
+For each document, we calculate "content" (real number) of a given keyword,
 We do that using our embeddings -- gensim library provides similarity methods for 2 words.
 We calculate mean similarity for each word in the document to the keyword.
 
-% We concatenate keywords lists from all defined classes:
-% \begin{equation}
-%     (k_{1,1}, k_{1,2}, \ldots, k_{1, n_1},
-%     k_{2,1}, k_{2,2}, \ldots, k_{2, n_2},
-%     \ldots,
-%     k_{|C|,1}, k_{|C|,2}, \ldots, k_{|C|, n_{|C|}})
-% \end{equation}
+We concatenate keywords lists from all defined classes:
+\begin{equation}
+    (k_{1,1}, k_{1,2}, \ldots, k_{1, n_1},
+    k_{2,1}, k_{2,2}, \ldots, k_{2, n_2},
+    \ldots,
+    k_{|C|,1}, k_{|C|,2}, \ldots, k_{|C|, n_{|C|}})
+\end{equation}
+
 Then we treat "contents" of the keywords as attributes of classification example.
 We create training examples from small manually created dataset - one training example from one text in dataset.
 
@@ -280,6 +283,7 @@ therefore performance is dependend on the document contents.
 \end{center}
 \end{table}
 
+\newpage
 \appendix
 \section{Detailed website classification benchmark results tables}
 % \label{singleResults}
