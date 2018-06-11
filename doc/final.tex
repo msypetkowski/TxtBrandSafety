@@ -143,7 +143,23 @@ by thresholding the following sum:
 \end{equation}
 where $P(c)$ is predicted probability of the text document having type $c$.
 We call this sum an advertisement compatibility with given website.
+In our case, threshold around 0.4 for banning ad achieved best results (see \ref{benchCompat}).
 
+\subsection{Text extraction}
+
+When our system gets html code as query parameters, it extract raw text from it.
+First, we use BeautifulSoup to filter out unneeded sections of html code (style, script and head).
+Then we use regex \verb|{(?s)<[^>]*>(\\s*<[^>]*>)*}| to clean up extracted html fragments.
+All extracted fragments are concatenated, then tokenized with nltk library.
+Finally, we remove words that are not in the word model dictionary.
+For example html:
+\begin{verbatim}
+<html> <head> head code <\head> <body> some body text <\body>
+\end{verbatim}
+Gives text:
+\begin{verbatim}
+some body text
+\end{verbatim}
 
 
 \subsection{Website classification and compatibility measurement benchmark}
@@ -181,6 +197,7 @@ We use keywords contents as attributes, so maximizing decision margins (like SVM
 seems to be a good idea in a common sense.
 
 \subsubsection {Advertisement compatibility measurement results}
+\label{benchCompat}
 We consider ads banned if the compatibility value is below 0.4.
 Best ad is defined as an ad with highest compatibility.
 Best ad accuracy is simply a a ratio of correct predictions
