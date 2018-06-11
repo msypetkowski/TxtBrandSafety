@@ -16,6 +16,7 @@ Python libaries:
 * nltk
 * numpy
 * flask
+* BeautifulSoup
 
 For website classification `word2vec` embeddings are needed.
 They can be downloaded
