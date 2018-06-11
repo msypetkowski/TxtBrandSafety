@@ -16,14 +16,21 @@
 \author{Mikołaj Ciesielski, Bartosz Paszko, Michał Sypetkowski}
 \maketitle
 
-\section{General information}
+\section{Introduction}
 
-The system provides brand safety functionality --
-answer queries with a html document as an argument.
+In online advertising context, brand safety refers to practises and tools allowing to ensure that an ad will not appear in a context that can damage the advertiser’s brand.
+Our work focuses only on discrimination of incompatible ads, basing on
+the website text.
+
+Our system can answer queries with a html document as an argument.
 The answer is vector of advertisement types compatibilities.
 These values can be thresholded for discrimination of incompatible
 ads or for selecting best ads for the given website.
 
+
+
+
+\section{General project information}
 
 Git hub repository: \url{https://github.com/msypetkowski/TxtBrandSafety}.
 
@@ -273,7 +280,6 @@ therefore performance is dependend on the document contents.
 \end{center}
 \end{table}
 
-\newpage
 \appendix
 \section{Detailed website classification benchmark results tables}
 % \label{singleResults}
