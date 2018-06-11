@@ -132,6 +132,7 @@ by thresholding the following sum:
     \sum_{c\in{C}} {C(t, c) \cdot P(c)}
 \end{equation}
 where $P(c)$ is predicted probability of the text document having type $c$.
+We call this sum an advertisement compatibility with given website.
 
 
 
@@ -139,7 +140,7 @@ where $P(c)$ is predicted probability of the text document having type $c$.
 
 We prepared a script for measuring website classification and
 advertisement compatibility.
-It is implemented \texttt{test.py}.
+Its implementation is in file \texttt{test.py}.
 
 The benchmark is divided into 3 tests:
 \begin{enumerate}
@@ -249,6 +250,11 @@ Results are shown in table \ref{table:perf}.
 In case of smaller query, the processing time is roughly proportional to the workers count,
 therefore our business functionality can be efficiently scaled horizontally.
 
+Times are only 3 times smaller for queries with around 5 times smaller file,
+because, our text extracting method may cut
+more or less html code cut with regex expressions,
+therefore performance is dependend on the document contents.
+
 \begin{table}[!hbt]
     \caption{ System performance measurement results (real time in seconds)
     \label{table:perf}
@@ -267,6 +273,7 @@ therefore our business functionality can be efficiently scaled horizontally.
 \end{center}
 \end{table}
 
+\newpage
 \appendix
 \section{Detailed website classification benchmark results tables}
 % \label{singleResults}
