@@ -18,17 +18,36 @@
 
 \section{Introduction}
 
+An example brand safety definition is published in
+\url{http://www.digitalmarketing-glossary.com/What-is-Brand-safety-definition}.
+
 In online advertising context,
 brand safety refers to practises and tools allowing to ensure that
 an ad will not appear in a context that can damage the advertiser’s brand.
-Our work focuses only on discrimination of incompatible ads, basing on
-the website text.
 
-Our system can answer queries with a html document as an argument.
-The answer is vector of advertisement types compatibilities.
+An other aspect of brand safety is the necessity to avoid some news contexts.
+A cruiseline doesn’t want his ad to appear alongside a shipwreck news.
+That type of risk is particularly high with contextual targeting.
+
+Our approach is generic -- our systems category range can be extended
+by solely modifying JSON data files, that define ad types, website
+classes, and datasets; but we look only into text data, we ignore images and other information
+(like javascript code, website style, text color, etc.).
+For example, shipwreck news can be added as an ad type,
+and cruiseline website as a website class.
+Therefore, our functionality may somehow cover various aspects of brand safety.
+Moreover, since we measure ad compatibility, our system can be also used
+for selecting best ads types for detected website type.
+
+The system can answer queries with a html document as an argument,
+and extracts raw text from it (see section \ref{extraction}).
+The answer is vector of advertisement types compatibilities (method described in section \ref{mainlogic}).
 These values can be thresholded for discrimination of incompatible
 ads or for selecting best ads for the given website.
 
+Our benchmarking (see section \ref{bench}) focuses only
+on discrimination of incompatible ads, basing on the website text.
+We performed also performance/scalability benchmark (see section \ref{perf}).
 
 
 
@@ -45,6 +64,7 @@ Most important tools and languages:
     \item \textbf{nltk}\footnote{\url{https://www.nltk.org/}}
     \item \textbf{gensim}\footnote{\url{https://radimrehurek.com/gensim/}}
     \item \textbf{flask}\footnote{\url{http://flask.pocoo.org/}}
+    \item \textbf{BeautifulSoup}\footnote{\url{https://www.crummy.com/software/BeautifulSoup/?}}
 \end{itemize}
 
 
@@ -146,6 +166,7 @@ We call this sum an advertisement compatibility with given website.
 In our case, threshold around 0.4 for banning ad achieved best results (see \ref{benchCompat}).
 
 \subsection{Text extraction}
+\label{extraction}
 
 When our system gets html code as query parameters, it extract raw text from it.
 First, we use BeautifulSoup to filter out unneeded sections of html code (style, script and head).
@@ -163,6 +184,7 @@ some body text
 
 
 \subsection{Website classification and compatibility measurement benchmark}
+\label{bench}
 
 We prepared a script for measuring website classification and
 advertisement compatibility.
@@ -268,6 +290,7 @@ This service can be deployed on multiple machines in multiple instances.
 See the project's \texttt{README.md} for deployment instructions.
 
 \subsection {Performance benchmark}
+\label{perf}
 
 We tested performance with single and 2 worker services.
 We ran script \texttt{performance\_test.sh} using 1,2 and 3 workers.
